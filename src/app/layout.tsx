@@ -23,14 +23,12 @@ export const viewport: Viewport = {
 
 export default function RootLayout({
   children,
-  params,
 }: {
   children: React.ReactNode;
-  params?: { locale?: string };
 }) {
-  // Determine direction based on locale (defaults to Hebrew/RTL)
-  const locale = params?.locale || 'he';
-  const direction = locale === 'he' ? 'rtl' : 'ltr';
+  // Default to Hebrew/RTL for this template
+  const locale = 'he';
+  const direction = 'rtl';
 
   return (
     <html lang={locale} dir={direction}>

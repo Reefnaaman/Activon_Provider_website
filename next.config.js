@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   outputFileTracingRoot: __dirname,
   images: {
     domains: ['dev.activon.app', 'images.unsplash.com'],

@@ -60,7 +60,7 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }: LightboxPro
   const currentImage = images[currentIndex];
 
   // Calculate distance between two touch points
-  const getDistance = (touch1: Touch, touch2: Touch) => {
+  const getDistance = (touch1: React.Touch, touch2: React.Touch) => {
     return Math.sqrt(
       Math.pow(touch2.clientX - touch1.clientX, 2) +
       Math.pow(touch2.clientY - touch1.clientY, 2)

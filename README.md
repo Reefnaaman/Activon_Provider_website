@@ -21,6 +21,7 @@ A modern, responsive business profile template built with Next.js 15, featuring 
 
 - Node.js 18+ 
 - npm or yarn
+- Docker and Docker Compose (for containerized deployment)
 - Activon Business API access (webhook URL and bearer token)
 
 ### Installation
@@ -57,6 +58,100 @@ npm run dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) to see the business directory.
+
+## 🐳 Docker Setup
+
+### Running with Docker
+
+For containerized deployment, use the provided Docker configuration:
+
+#### Option 1: Docker Compose (Recommended)
+
+1. **Start the application**:
+```bash
+docker-compose up --build
+```
+
+2. **Run in background**:
+```bash
+docker-compose up -d --build
+```
+
+3. **Stop the services**:
+```bash
+docker-compose down
+```
+
+#### Option 2: Docker Commands
+
+1. **Build the Docker image**:
+```bash
+docker build -t activon-website .
+```
+
+2. **Run the container**:
+```bash
+docker run -d -p 3000:3000 --name activon-container activon-website
+```
+
+3. **View container status**:
+```bash
+docker ps
+```
+
+4. **Check logs**:
+```bash
+docker logs activon-container
+```
+
+5. **Stop the container**:
+```bash
+docker stop activon-container
+```
+
+### Docker Configuration
+
+The Docker setup includes:
+
+- **Multi-stage build** for optimized production images
+- **Security best practices** with non-root user execution
+- **Next.js standalone output** for minimal container size
+- **Production environment** configuration
+- **Health checks** and proper signal handling
+
+### Environment Variables for Docker
+
+When using Docker, you can pass environment variables:
+
+```bash
+docker run -d -p 3000:3000 \
+  -e ACTIVON_API_URL=https://your-webhook-url \
+  -e ACTIVON_BEARER_TOKEN=your-token \
+  -e NEXT_PUBLIC_APP_URL=http://localhost:3000 \
+  --name activon-container \
+  activon-website
+```
+
+Or create a `.env` file and use it with Docker Compose:
+
+```yaml
+# docker-compose.yml
+services:
+  activon-website:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+```
+
+### Docker Files Structure
+
+```
+├── Dockerfile              # Multi-stage production build
+├── docker-compose.yml      # Orchestration configuration  
+└── .dockerignore           # Build context optimization
+```
 
 ## 📖 Usage
 
@@ -199,13 +294,43 @@ Built-in event tracking hooks for:
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Docker Deployment (Recommended)
+
+#### Production Docker Deployment
+1. Build the production image:
+```bash
+docker build -t activon-website:latest .
+```
+
+2. Run with production environment:
+```bash
+docker run -d -p 3000:3000 \
+  -e NODE_ENV=production \
+  -e ACTIVON_API_URL=https://your-production-webhook \
+  -e ACTIVON_BEARER_TOKEN=your-production-token \
+  -e NEXT_PUBLIC_APP_URL=https://your-domain.com \
+  --name activon-production \
+  activon-website:latest
+```
+
+3. Or use Docker Compose for production:
+```bash
+docker-compose -f docker-compose.yml up -d
+```
+
+#### Container Orchestration
+- **Docker Swarm**: Use the provided `docker-compose.yml`
+- **Kubernetes**: Create deployment manifests based on the Docker image
+- **AWS ECS/Fargate**: Deploy using the built container image
+- **Google Cloud Run**: Direct deployment from container registry
+
+### Vercel Deployment
 1. Push code to GitHub repository
 2. Connect repository to Vercel
 3. Add environment variables in Vercel dashboard
 4. Deploy automatically on push to main branch
 
-### Other Platforms
+### Traditional Deployment
 1. Build the project: `npm run build`
 2. Set environment variables on your platform
 3. Deploy the generated `.next` folder

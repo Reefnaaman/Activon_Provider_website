@@ -327,7 +327,6 @@ export function ContactSection({ business, className, locale = 'en' }: ContactSe
                     : "w-full"
                 )}
                 locale={locale}
-                onClick={() => handleContactClick('social', social.platform)}
               />
             ))}
           </div>
