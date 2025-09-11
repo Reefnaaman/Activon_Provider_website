@@ -145,6 +145,85 @@ export type CTA = {
   disabled?: boolean;
 };
 
+// Service and Activity types from API
+export type ServiceMediaObject = {
+  images?: Array<{
+    id: string;
+    uri: string;
+    order: number;
+    fileSize?: number;
+    mimeType?: string;
+    uploadedAt?: string;
+  }>;
+  videos?: Array<any>;
+  gallery?: Array<any>;
+  profile?: {
+    mainImageId?: string;
+    profileImageIds?: string[];
+    profileVideoIds?: string[];
+  };
+};
+
+export type ActivityPricingOption = {
+  id: string;
+  type: 'monthly' | 'weekly' | 'yearly' | 'one-time';
+  price: number;
+  isActive: boolean;
+  isDefault: boolean;
+  subscriptionDetails?: {
+    autoRenew: boolean;
+    billingCycle: string;
+    lessonsPerCycle?: number;
+  };
+};
+
+export type Activity = {
+  id: number;
+  title: string;
+  description?: string;
+  service_id: number;
+  category_id?: number;
+  subcategory_id?: number;
+  is_active: boolean;
+  is_mobile?: boolean;
+  is_online?: boolean;
+  max_capacity?: number;
+  gender?: string | null;
+  age_range?: {
+    min: number;
+    max: number;
+  };
+  tags?: {
+    tags: string[];
+  };
+  color?: string;
+  is_free_trial?: boolean;
+  media_object?: ServiceMediaObject;
+  pricing_object?: {
+    notes?: string;
+    options?: ActivityPricingOption[];
+    currency?: string;
+    discounts?: Array<any>;
+    taxIncluded?: boolean;
+  };
+  locations_object?: any;
+  instance_definition?: string;
+};
+
+export type Service = {
+  service_id: number;
+  service_title: string;
+  service_description?: string;
+  service_media_object?: ServiceMediaObject;
+  service_is_active: boolean;
+  service_category_id?: number;
+  service_subcategory_id?: number;
+  activity_count: string | number;
+  activities: Activity[];
+};
+
+export type ServicesApiResponse = Service[];
+
 // Utility types
 export type LocaleDirection = 'ltr' | 'rtl';
 export type SupportedLocale = 'he' | 'en';

@@ -5,16 +5,16 @@ import { NormalizedBusiness } from '@/types/business';
 import { CTASection } from '@/components/CTASection';
 import { ServiceBadge } from '@/components/ServiceBadge';
 import { Gallery } from '@/components/Gallery';
-import { cn, getDirectionalClasses, getBusinessServices, initials } from '@/lib/utils';
+import { cn, getDirectionalClasses, initials } from '@/lib/utils';
 
 interface MobileHeroProps {
   business: NormalizedBusiness;
   locale?: 'he' | 'en';
+  serviceBadges?: Array<{ title: string; type: 'service' | 'activity' }>;
 }
 
-export function MobileHero({ business, locale = 'en' }: MobileHeroProps) {
+export function MobileHero({ business, locale = 'en', serviceBadges = [] }: MobileHeroProps) {
   const textClasses = getDirectionalClasses(locale, 'text');
-  const businessServices = getBusinessServices(business.serviceCount, business.activityCount);
 
   return (
     <div className="lg:hidden relative overflow-hidden">
@@ -61,7 +61,7 @@ export function MobileHero({ business, locale = 'en' }: MobileHeroProps) {
           )}
 
           {/* Service Badges - Proper Container */}
-          {(business.categoryName || businessServices.length > 0) && (
+          {(business.categoryName || serviceBadges.length > 0) && (
             <div className="mb-5">
               <div 
                 className={cn(
@@ -85,7 +85,7 @@ export function MobileHero({ business, locale = 'en' }: MobileHeroProps) {
                   {business.categoryName}
                 </span>
               )}
-              {businessServices.slice(0, 4).map((service, index) => (
+              {serviceBadges.slice(0, 4).map((service, index) => (
                 <div key={`mobile-hero-service-${index}`} className="flex-shrink-0 snap-center">
                   <ServiceBadge
                     service={{
@@ -96,13 +96,13 @@ export function MobileHero({ business, locale = 'en' }: MobileHeroProps) {
                   />
                 </div>
               ))}
-              {businessServices.length > 4 && (
+              {serviceBadges.length > 4 && (
                 <span className={cn(
                   "bg-gray-500/20 border border-gray-400/30 px-4 py-2",
                   "rounded-xl text-gray-300 text-sm font-medium whitespace-nowrap",
                   "flex-shrink-0 snap-center flex items-center"
                 )}>
-                  +{businessServices.length - 4} more
+                  +{serviceBadges.length - 4} more
                 </span>
               )}
               </div>

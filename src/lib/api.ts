@@ -1,4 +1,4 @@
-import { BusinessApiResponse, BusinessListApiResponse } from '@/types/business';
+import { BusinessApiResponse, BusinessListApiResponse, ServicesApiResponse } from '@/types/business';
 
 // Use full URLs for both server-side and client-side requests
 const getApiBase = () => {
@@ -58,4 +58,8 @@ export async function fetchBusinessList(
   if (offset) params.set('offset', offset.toString());
   
   return fetchApi<BusinessListApiResponse>(`/business${params.toString() ? `?${params}` : ''}`);
+}
+
+export async function fetchBusinessServices(businessId: number): Promise<ServicesApiResponse> {
+  return fetchApi<ServicesApiResponse>(`/business/services?business_id=${businessId}`);
 }

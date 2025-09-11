@@ -8,6 +8,11 @@ if (!ACTIVON_API_URL || !ACTIVON_BEARER_TOKEN) {
   console.error('Missing required environment variables: ACTIVON_API_URL and ACTIVON_BEARER_TOKEN');
 }
 
+// Disable SSL verification for development (the dev API has a self-signed certificate)
+if (process.env.NODE_ENV === 'development') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

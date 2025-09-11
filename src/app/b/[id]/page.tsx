@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { fetchBusiness } from '@/lib/api';
+import { fetchBusiness, fetchBusinessServices } from '@/lib/api';
 import { normalizeBusiness } from '@/lib/normalize';
 import { generateMetadata as generateBusinessMetadata, StructuredDataScript } from '@/components/SEO';
 import { Hero } from '@/components/Hero';
@@ -14,6 +14,7 @@ import { detectLanguage, getDirectionalClasses, getLanguageSpecificClasses, plur
 import { BackgroundGradient } from '@/components/ui/background-gradient';
 import { BusinessNavbar } from '@/components/BusinessNavbar';
 import { MobileHero } from '@/components/mobile/MobileHero';
+import { Service } from '@/types/business';
 
 interface BusinessPageProps {
   params: { id: string };
@@ -64,6 +65,15 @@ export default async function BusinessPage({
 
     const business = normalizeBusiness(response.data);
     
+    // Fetch real services data for this business
+    let services: Service[] = [];
+    try {
+      services = await fetchBusinessServices(businessId);
+    } catch (error) {
+      console.error('Failed to fetch services:', error);
+      // Continue without services if fetch fails
+    }
+    
     // Detect language from business name for RTL/LTR support
     let businessLocale = detectLanguage(business.name);
     
@@ -77,8 +87,46 @@ export default async function BusinessPage({
     const containerClasses = getDirectionalClasses(businessLocale, 'container');
     const langClasses = getLanguageSpecificClasses(businessLocale);
     
-    // Get business services and activities for display
-    const businessServices = getBusinessServices(business.serviceCount, business.activityCount);
+    // Create service badges from real services data
+    const serviceBadges = [];
+    
+    // Add service badges
+    services.forEach(service => {
+      if (service.service_is_active) {
+        serviceBadges.push({
+          title: service.service_title,
+          type: 'service' as const
+        });
+        
+        // Add activity badges from this service
+        if (service.activities) {
+          service.activities.forEach(activity => {
+            if (activity.is_active) {
+              serviceBadges.push({
+                title: activity.title,
+                type: 'activity' as const
+              });
+            }
+          });
+        }
+      }
+    });
+    
+    // Fallback to generic badges if no services data
+    if (serviceBadges.length === 0 && (business.serviceCount > 0 || business.activityCount > 0)) {
+      if (business.serviceCount > 0) {
+        serviceBadges.push({
+          title: `${business.serviceCount} ${business.serviceCount === 1 ? 'Service' : 'Services'}`,
+          type: 'service' as const
+        });
+      }
+      if (business.activityCount > 0) {
+        serviceBadges.push({
+          title: `${business.activityCount} ${business.activityCount === 1 ? 'Activity' : 'Activities'}`,
+          type: 'activity' as const
+        });
+      }
+    }
 
     return (
       <>
@@ -132,7 +180,7 @@ export default async function BusinessPage({
                     {business.categoryName}
                   </span>
                 )}
-                {businessServices.map((service, index) => (
+                {serviceBadges.map((service, index) => (
                   <ServiceBadge
                     key={`service-${index}`}
                     service={service}
@@ -194,10 +242,10 @@ export default async function BusinessPage({
           </div>
 
           {/* New Mobile Hero Component */}
-          <MobileHero business={business} locale={businessLocale} />
+          <MobileHero business={business} locale={businessLocale} serviceBadges={serviceBadges} />
           
           {/* Desktop Only: Section Peek - Visual hint that there's content below */}
-          {businessServices.length > 0 && (
+          {serviceBadges.length > 0 && (
             <div className="hidden lg:block absolute bottom-0 left-0 right-0 h-40 overflow-hidden pointer-events-none z-20">
               <div className="absolute bottom-0 left-[16%] w-1/2 h-40 rounded-t-[200px] transform translate-y-12 flex justify-center overflow-hidden bg-[#0D1117]/80 backdrop-blur-md border border-white/10">
                 {/* Background image removed to match hero card styling */}
@@ -229,7 +277,7 @@ export default async function BusinessPage({
               </div>
               <div className="absolute inset-0 bg-[#0D1117]/80"></div>
               <div className="relative z-10 max-w-7xl mx-auto py-16">
-                <ServicesSection business={business} showcaseMode />
+                <ServicesSection business={business} services={services} showcaseMode />
               </div>
               
               {/* Desktop Only: Section Peek - Visual hint of next section */}
@@ -265,7 +313,7 @@ export default async function BusinessPage({
                 </h2>
                 <div className="bg-white/8 backdrop-blur-[20px] border border-white/25 rounded-4xl p-6 shadow-2xl overflow-hidden">
                   <div className="relative z-10">
-                    <ServicesSection business={business} />
+                    <ServicesSection business={business} services={services} />
                   </div>
                 </div>
               </div>
