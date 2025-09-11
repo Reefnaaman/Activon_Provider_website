@@ -1,0 +1,357 @@
+# ACTIVON PROVIDER TEMPLATE - MOCK DATA INVENTORY
+# Source of Truth for API Integration Planning
+# Generated: 2025-01-04
+# Purpose: Document all mock/placeholder data vs real API data for future integration
+
+================================================================================
+📊 EXECUTIVE SUMMARY
+================================================================================
+
+REAL API DATA (Fully Integrated): ✅
+- Business profile information (name, description, category, IDs)
+- Contact data (phones, emails, addresses with comprehensive field mapping)
+- Social media links with platform detection
+- Media objects (hero images, gallery with order/metadata)
+- Business status and numerical counts (serviceCount, activityCount)
+
+MOCK/TEMPLATE DATA (Needs Integration): ❌
+- Service/Activity templates with names, descriptions, pricing
+- Placeholder images for businesses without sufficient media
+- Service showcase images in ServicesSection component
+- Template-based service generation logic
+
+HYBRID SYSTEMS (Real Data + Template Logic): 🔄
+- CTA prioritization (real contacts + template decision logic)
+- Gallery displays (real images + Unsplash fallbacks)
+- Service badges (real counts + template names)
+
+================================================================================
+🎯 CRITICAL INTEGRATION POINTS (Priority Order)
+================================================================================
+
+[HIGH PRIORITY] - Service/Activity Data Templates
+- Location: /src/lib/utils.ts, /src/components/ServicesSection.tsx
+- Impact: Core business functionality
+- Effort: Major API integration required
+
+[MEDIUM PRIORITY] - Image Fallback System
+- Location: Multiple components
+- Impact: Visual presentation quality
+- Effort: Image management system enhancement
+
+[LOW PRIORITY] - Static Text/Labels
+- Location: Various UI components
+- Impact: Personalization and localization
+- Effort: Simple API field additions
+
+================================================================================
+🔍 DETAILED MOCK DATA INVENTORY
+================================================================================
+
+## 1. SERVICE & ACTIVITY TEMPLATES
+**Status**: 100% MOCK DATA - NEEDS FULL API INTEGRATION
+
+**Files Affected**:
+- `/src/lib/utils.ts` (lines 87-101)
+- `/src/components/ServicesSection.tsx` (lines 76-90)
+
+**Mock Service Templates**:
+1. "Monthly Orange Picking" - $25 - "Fresh seasonal oranges picked monthly from our organic groves"
+2. "Home Garden Consultation" - $75 - "Expert advice on setting up your perfect home garden"
+3. "Organic Produce Delivery" - Weekly - "Weekly delivery of fresh, locally grown organic vegetables"
+4. "Seasonal Fruit Boxes" - Monthly - "Curated selection of the finest seasonal fruits"
+5. "Garden Design Service" - Quote - "Professional garden planning and landscape design"
+6. "Plant Care Workshop" - Group rates - "Learn essential plant care and gardening techniques"
+
+**Mock Activity Templates**:
+1. "Weekly Nature Walk" - 2 hours - "Guided nature walks exploring local flora and wildlife"
+2. "Family Farm Tours" - 3 hours - "Educational tours of our organic farm for the whole family"
+3. "Kids Gardening Club" - 1.5 hours - "Hands-on gardening activities for children ages 5-12"
+4. "Harvest Festival" - Full day - "Seasonal celebration with picking, tasting, and activities"
+
+**Integration Required**:
+```javascript
+// CURRENT MOCK IMPLEMENTATION
+export const getServiceTemplates = () => [
+  { title: 'Monthly Orange Picking', description: '...', price: 'From $25' },
+  // ... 5 more mock services
+];
+
+// FUTURE API INTEGRATION NEEDED
+export const getBusinessServices = async (businessId: number) => {
+  const response = await fetch(`${API_URL}/businesses/${businessId}/services`);
+  return response.json();
+};
+```
+
+## 2. PLACEHOLDER IMAGE SYSTEM
+**Status**: HYBRID - Real images preferred, Unsplash fallbacks when needed
+
+**Files Affected**:
+- `/src/components/ServicesSection.tsx` (lines 102-133)
+
+**Service-Specific Placeholder Images**:
+- Orange picking/citrus harvest: https://images.unsplash.com/photo-1557800636-894a64c1696f?w=400&h=300&fit=crop&q=80
+- Garden consultation/planning: https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80
+- Organic produce delivery: https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop&q=80
+- Seasonal fruit boxes: https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop&q=80
+- Garden design service: https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=400&h=300&fit=crop&q=80
+- Plant care workshop: https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80
+
+**Activity-Specific Placeholder Images**:
+- Weekly nature walk: https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop&q=80
+- Family farm tours: https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&h=300&fit=crop&q=80
+- Kids gardening club: https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&h=300&fit=crop&q=80
+- Harvest festival: https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&q=80
+
+**Enhancement Needed**:
+- Replace Unsplash URLs with service-specific image database
+- Implement image categorization system
+- Add image-to-service mapping API
+
+## 3. UI COLOR SCHEMES & STYLING
+**Status**: TEMPLATE-BASED - Could be made dynamic
+
+**Service Type Color Mapping**:
+- Services (Orange): `from-[#FEC46C]/20 to-[#F28E35]/20 border-[#F28E35]/30 text-[#FEC46C]`
+- Activities (Blue): `from-[#2E6FF2]/20 to-[#5F8CFF]/20 border-[#2E6FF2]/30 text-[#2E6FF2]`
+- Categories (Purple): `from-purple-50 text-purple-700 border-purple-200`
+
+**Files Using Color Templates**:
+- `/src/components/ServiceBadge.tsx`
+- `/src/app/b/[id]/page.tsx` (hero section badges)
+- `/src/components/ServicesSection.tsx`
+
+================================================================================
+✅ REAL API DATA INTEGRATION (Already Implemented)
+================================================================================
+
+## 1. BUSINESS PROFILE DATA
+**Status**: FULLY INTEGRATED
+
+**API Endpoint**: `ACTIVON_API_URL/n8n/webhook/businesses`
+**File**: `/src/lib/normalize.ts`
+
+**Integrated Fields**:
+```typescript
+interface NormalizedBusiness {
+  id: number;                    // ✅ Real API
+  name: string;                  // ✅ Real API  
+  description?: string;          // ✅ Real API
+  isActive: boolean;            // ✅ Real API (is_active)
+  categoryName?: string;        // ✅ Real API (category_name)
+  subcategoryName?: string;     // ✅ Real API (subcategory_name)
+  serviceCount: number;         // ✅ Real API (service_count)
+  activityCount: number;        // ✅ Real API (activity_count)
+  // ... additional real fields
+}
+```
+
+## 2. CONTACT INFORMATION
+**Status**: FULLY INTEGRATED with comprehensive field mapping
+
+**Email Normalization** (handles multiple API field variations):
+```typescript
+const toEmail = (e: any): NormalizedEmail | null => {
+  const val = e?.email ?? e?.address ?? e?.value;  // ✅ Multiple field support
+  return val ? {
+    email: String(val),      // ✅ Real API
+    label: e?.label,         // ✅ Real API
+    isPrimary: !!e?.isPrimary // ✅ Real API
+  } : null;
+};
+```
+
+**Phone/Address/Social Links**: All fully integrated with real API data
+
+## 3. MEDIA MANAGEMENT
+**Status**: FULLY INTEGRATED with sophisticated fallback system
+
+**Real API Integration**:
+- Hero image selection based on `mainImageId`
+- Gallery ordering by `order` field
+- Image metadata (mimeType, uploadedAt)
+- Fallback to first available image
+
+================================================================================
+🔄 HYBRID SYSTEMS (Real + Template Logic)
+================================================================================
+
+## 1. CTA PRIORITIZATION SYSTEM
+**Status**: Uses real contact data with template decision logic
+
+**File**: `/src/lib/normalize.ts` (lines 101-166)
+**Logic**: Real contact data → Template priority rules → CTA generation
+```typescript
+// Real API data input, template logic output
+export function pickCTA(business: NormalizedBusiness): CTA {
+  // Template logic: WhatsApp > Call > Email > None
+  if (primaryPhone?.hasWhatsApp) return whatsappCTA;  // ✅ Real data
+  if (primaryPhone?.number) return callCTA;           // ✅ Real data
+  if (primaryEmail) return emailCTA;                  // ✅ Real data
+  return defaultCTA;                                  // ❌ Template fallback
+}
+```
+
+## 2. SERVICE BADGE GENERATION
+**Status**: Real counts drive template name selection
+
+**Files**: 
+- `/src/lib/utils.ts` (getBusinessServices function)
+- `/src/app/b/[id]/page.tsx` (service badge rendering)
+
+**Current Logic**:
+```typescript
+// Real API count → Template names
+export const getBusinessServices = (serviceCount: number, activityCount: number) => {
+  const services = [];
+  // ❌ Uses template data based on real counts
+  for (let i = 0; i < Math.min(serviceCount, serviceTemplates.length); i++) {
+    services.push({ ...serviceTemplates[i], type: 'service' });
+  }
+  // Same for activities...
+}
+```
+
+================================================================================
+📋 FUTURE API INTEGRATION ACTION PLAN
+================================================================================
+
+## PHASE 1: Core Service Data (HIGH PRIORITY)
+**Target**: Replace service/activity templates with real API data
+
+**Required API Endpoints**:
+```
+GET /businesses/{id}/services
+GET /businesses/{id}/activities  
+GET /services/{id} (for detailed service info)
+GET /activities/{id} (for detailed activity info)
+```
+
+**Expected Response Format**:
+```json
+{
+  "services": [
+    {
+      "id": 123,
+      "title": "Real Service Name",
+      "description": "Real service description",
+      "price": "Real pricing info",
+      "category": "service",
+      "images": ["url1", "url2"],
+      "isActive": true
+    }
+  ]
+}
+```
+
+**Files to Update**:
+1. `/src/lib/utils.ts` - Replace getServiceTemplates() and getActivityTemplates()
+2. `/src/components/ServicesSection.tsx` - Update service card generation
+3. `/src/lib/normalize.ts` - Add service normalization functions
+
+## PHASE 2: Enhanced Image Management (MEDIUM PRIORITY)
+**Target**: Implement service-specific image categorization
+
+**Required API Enhancements**:
+```
+GET /services/{id}/images
+GET /activities/{id}/images
+GET /media/categories (for image categorization)
+```
+
+**Implementation**: 
+- Maintain Unsplash fallbacks for businesses without sufficient media
+- Add image-to-service mapping
+- Implement smart image selection based on service type
+
+## PHASE 3: Dynamic Personalization (LOW PRIORITY)
+**Target**: Make UI elements dynamic based on business preferences
+
+**Potential API Fields**:
+```json
+{
+  "businessPreferences": {
+    "primaryColor": "#FEC46C",
+    "secondaryColor": "#2E6FF2",
+    "brandingStyle": "modern",
+    "preferredCTAOrder": ["whatsapp", "call", "email"]
+  }
+}
+```
+
+================================================================================
+🔧 TECHNICAL IMPLEMENTATION NOTES
+================================================================================
+
+## Current Template System Strengths:
+1. **Graceful Degradation**: Businesses with no data still look professional
+2. **Type Safety**: Full TypeScript coverage for all data structures
+3. **Responsive Design**: Templates work across all device sizes
+4. **Accessibility**: Proper ARIA labels and semantic HTML
+5. **Performance**: Optimized with proper caching and lazy loading
+
+## Integration Considerations:
+1. **Backward Compatibility**: Maintain template fallbacks for businesses without rich data
+2. **Caching Strategy**: Implement proper cache invalidation for service data
+3. **Error Handling**: Graceful fallbacks when API endpoints are unavailable
+4. **Loading States**: Skeleton screens while fetching service details
+5. **SEO Impact**: Ensure rich service data improves search visibility
+
+## Migration Strategy:
+1. **Feature Flag Approach**: Toggle between template and API data during development
+2. **A/B Testing**: Compare template vs real data performance
+3. **Gradual Rollout**: Phase in API integration by business type or size
+4. **Monitoring**: Track API performance and fallback usage
+
+================================================================================
+📝 MAINTENANCE NOTES
+================================================================================
+
+## Template Data Locations (Complete List):
+- `/src/lib/utils.ts` (lines 87-126) - Service/Activity templates and generation logic
+- `/src/components/ServicesSection.tsx` (lines 76-132) - Duplicate templates for showcase mode
+- `/src/components/ServiceBadge.tsx` - Color scheme mappings
+- Various Unsplash image URLs throughout codebase
+
+## Real Data Processing:
+- `/src/lib/normalize.ts` - Comprehensive data normalization with field variations
+- `/src/lib/api.ts` - API client with proper error handling
+- `/src/types/business.ts` - Complete TypeScript definitions
+
+## Testing Scenarios:
+- Business with 0 services/activities (shows only categories)
+- Business with 1-2 services (uses first templates)
+- Business with 6+ services (cycles through all templates)
+- Business with mixed services and activities
+- Business with Hebrew name (RTL support)
+- Business with long name (navbar word wrapping)
+
+================================================================================
+🎯 SUCCESS METRICS FOR API INTEGRATION
+================================================================================
+
+## Data Quality Metrics:
+- % of businesses with complete service information
+- Average service description length/quality
+- Image-to-service relevance scores
+- User engagement with service details
+
+## Performance Metrics:
+- API response times for service endpoints
+- Cache hit rates for service data
+- Fallback usage statistics
+- Page load times with real vs template data
+
+## Business Impact:
+- Conversion rate improvements with detailed service info
+- User time spent in services section
+- Click-through rates from service badges
+- Contact form completions by service type
+
+================================================================================
+
+This document serves as the definitive source of truth for understanding what data is currently mocked versus what comes from the real API. It should be updated as API integration progresses and new mock data is identified or replaced with real data.
+
+Last Updated: 2025-01-04
+Next Review: When API integration begins
