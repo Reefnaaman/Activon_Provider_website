@@ -27,7 +27,7 @@ export function MobileHero({ business, locale = 'en' }: MobileHeroProps) {
       </div>
 
       {/* Floating Glassmorphic Info Card - Positioned much lower */}
-      <div className="absolute bottom-8 left-4 right-4 z-10">
+      <div className="absolute bottom-4 left-4 right-4 z-10">
         <div 
           className={cn(
             "bg-white/8 backdrop-blur-[20px] saturate-[140%] brightness-[105%]",

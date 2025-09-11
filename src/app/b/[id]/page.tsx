@@ -250,14 +250,10 @@ export default async function BusinessPage({
               </div>
             </section>
 
-            {/* Mobile Services Section - Gallery Background with Floating Card */}
+            {/* Mobile Services Section - Solid Background */}
             <section className="lg:hidden relative py-16 mt-16 overflow-hidden min-h-[400px]">
-              {/* Gallery Background - Positioned behind content */}
-              <div className="absolute inset-0 z-0">
-                <Gallery business={business} backgroundMode syncedMirror />
-              </div>
-              {/* Dark overlay for better text readability */}
-              <div className="absolute inset-0 bg-[#0D1117]/80 z-1"></div>
+              {/* Solid dark background */}
+              <div className="absolute inset-0 bg-[#0D1117]"></div>
               
               {/* Content container - Always on top */}
               <div className="relative z-20 px-4">
