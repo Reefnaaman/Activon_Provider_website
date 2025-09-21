@@ -70,10 +70,8 @@ function CTAButton({
     'inline-flex items-center justify-center gap-2 rounded-2xl font-ui transition-all duration-300 tracking-wide',
     'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500/50',
     'active:scale-95 transform-gpu',
-    // Mobile-optimized touch targets
-    isMobile ? 'touch-target-lg px-6 py-4 text-base' : 'px-8 py-4 text-sm',
-    // Touch-friendly spacing and sizing
-    isTouchDevice && 'min-h-[56px]',
+    // Ensure 56px touch targets on mobile
+    isMobile || isTouchDevice ? 'min-h-[56px] px-6 py-4 text-base' : 'px-8 py-3 text-sm min-h-[48px]',
     locale === 'he' ? 'flex-row-reverse' : '',
     (cta.disabled || isLoading) && 'opacity-50 cursor-not-allowed',
     isLoading && 'pointer-events-none',

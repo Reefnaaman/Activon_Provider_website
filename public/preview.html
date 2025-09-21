@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activon Responsive Preview - Professional Device Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0D1117;
+            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'SF Pro Display', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .preview-container {
+            display: flex;
+            height: 100vh;
+            gap: 40px;
+            padding: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* LEFT SIDE - iPhone Frame */
+        .mobile-section {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .device-selector {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .device-btn {
+            background: transparent;
+            border: none;
+            color: #AEB4C1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .device-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+        }
+
+        .device-btn.active {
+            background: linear-gradient(135deg, #2E6FF2, #5F8CFF);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(46, 111, 242, 0.25);
+        }
+
+        /* PHOTOREALISTIC IPHONE FRAME */
+        .iphone-frame {
+            position: relative;
+            width: 390px;
+            height: 844px;
+            max-height: 800px;
+            background: linear-gradient(145deg, #E8E8ED, #C7C7CC);
+            border-radius: 60px;
+            padding: 8px;
+            box-shadow: 
+                0 0 0 2px #C7C7CC,
+                0 0 0 3px #E8E8ED,
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .iphone-frame:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 0 0 2px #C7C7CC,
+                0 0 0 3px #E8E8ED,
+                0 25px 70px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Side buttons */
+        .iphone-frame::before {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: 140px;
+            width: 4px;
+            height: 32px;
+            background: linear-gradient(90deg, #C7C7CC, #E8E8ED);
+            border-radius: 2px 0 0 2px;
+            box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .iphone-frame::after {
+            content: '';
+            position: absolute;
+            left: -3px;
+            top: 190px;
+            width: 4px;
+            height: 58px;
+            background: linear-gradient(90deg, #C7C7CC, #E8E8ED);
+            border-radius: 2px 0 0 2px;
+            box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Power button */
+        .power-button {
+            position: absolute;
+            right: -3px;
+            top: 200px;
+            width: 4px;
+            height: 80px;
+            background: linear-gradient(270deg, #C7C7CC, #E8E8ED);
+            border-radius: 0 2px 2px 0;
+            box-shadow: 0 -2px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Screen container with notch */
+        .iphone-screen {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 52px;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 0 2px #1D1D1F,
+                inset 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Dynamic Island */
+        .dynamic-island {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 126px;
+            height: 37px;
+            background: #1D1D1F;
+            border-radius: 22px;
+            z-index: 10;
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+
+        /* Speaker/camera cutouts */
+        .dynamic-island::before {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            background: #0A0A0A;
+            border-radius: 50%;
+            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.8);
+        }
+
+        .dynamic-island::after {
+            content: '';
+            position: absolute;
+            right: 22px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #0A0A0A;
+            border-radius: 50%;
+            box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Home indicator */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 134px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            z-index: 10;
+        }
+
+        /* Content iframe */
+        .iphone-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 52px;
+            background: #FFFFFF;
+        }
+
+        /* RIGHT SIDE - Desktop View */
+        .desktop-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 800px;
+            max-width: calc(100vw - 490px);
+            min-width: 600px;
+        }
+
+        .desktop-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            margin-bottom: 20px;
+            gap: 20px;
+        }
+
+        .desktop-label {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #AEB4C1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #AEB4C1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+        }
+
+        .desktop-frame {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .desktop-content {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #FFFFFF;
+        }
+
+        /* Loading states */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #2E6FF2;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 5;
+        }
+
+        .loading::before {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(46, 111, 242, 0.3);
+            border-top: 2px solid #2E6FF2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alternative device frames */
+        .iphone-se {
+            width: 320px;
+            height: 568px;
+            border-radius: 40px;
+        }
+
+        .iphone-se .iphone-screen {
+            border-radius: 32px;
+        }
+
+        .iphone-se .dynamic-island {
+            display: none;
+        }
+
+        .iphone-se .home-indicator {
+            display: none;
+        }
+
+        .iphone-plus {
+            width: 414px;
+            height: 896px;
+            max-height: 800px;
+        }
+
+        /* Responsive breakpoint */
+        @media (max-width: 1400px) {
+            .preview-container {
+                padding: 20px;
+                gap: 20px;
+            }
+            
+            .iphone-frame {
+                transform: scale(0.85);
+                transform-origin: center;
+            }
+            
+            .desktop-section {
+                min-width: 500px;
+            }
+        }
+
+        /* Title */
+        .preview-title {
+            position: absolute;
+            top: 20px;
+            left: 40px;
+            color: #2E6FF2;
+            font-size: 18px;
+            font-weight: 600;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div class="preview-title">⚡ Activon Preview</div>
+    
+    <div class="preview-container">
+        <!-- LEFT: iPhone Frame -->
+        <div class="mobile-section">
+            <div class="device-selector">
+                <button class="device-btn active" data-device="iphone14">iPhone 14 Pro</button>
+                <button class="device-btn" data-device="iphone-se">iPhone SE</button>
+                <button class="device-btn" data-device="iphone-plus">iPhone 14 Plus</button>
+            </div>
+
+            <div class="iphone-frame" id="iphoneFrame">
+                <div class="power-button"></div>
+                <div class="iphone-screen">
+                    <div class="dynamic-island"></div>
+                    <div class="home-indicator"></div>
+                    <div class="loading">Loading mobile view</div>
+                    <iframe 
+                        id="mobileFrame" 
+                        class="iphone-content" 
+                        src="/b/17"
+                        title="Mobile Preview">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Desktop View -->
+        <div class="desktop-section">
+            <div class="desktop-header">
+                <div class="desktop-label">Desktop View - Responsive Layout</div>
+                <div class="controls">
+                    <button class="control-btn" id="refreshBtn">
+                        <span>↻</span> Refresh Both
+                    </button>
+                </div>
+            </div>
+
+            <div class="desktop-frame">
+                <div class="loading">Loading desktop view</div>
+                <iframe 
+                    id="desktopFrame" 
+                    class="desktop-content" 
+                    src="/b/17"
+                    title="Desktop Preview">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class ActivonPreview {
+            constructor() {
+                this.currentDevice = 'iphone14';
+                this.devices = {
+                    'iphone14': {
+                        width: 390,
+                        height: 844,
+                        classes: '',
+                        label: 'iPhone 14 Pro',
+                        hasNotch: true
+                    },
+                    'iphone-se': {
+                        width: 320,
+                        height: 568,
+                        classes: 'iphone-se',
+                        label: 'iPhone SE',
+                        hasNotch: false
+                    },
+                    'iphone-plus': {
+                        width: 414,
+                        height: 896,
+                        classes: 'iphone-plus',
+                        label: 'iPhone 14 Plus',
+                        hasNotch: true
+                    }
+                };
+                
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.setupLoadHandlers();
+            }
+
+            bindEvents() {
+                // Device selector
+                document.querySelectorAll('.device-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const device = e.target.dataset.device;
+                        this.switchDevice(device);
+                    });
+                });
+
+                // Refresh button
+                document.getElementById('refreshBtn').addEventListener('click', () => {
+                    this.refreshFrames();
+                });
+            }
+
+            setupLoadHandlers() {
+                const mobileFrame = document.getElementById('mobileFrame');
+                const desktopFrame = document.getElementById('desktopFrame');
+
+                mobileFrame.addEventListener('load', () => {
+                    this.hideLoading('mobile');
+                });
+
+                desktopFrame.addEventListener('load', () => {
+                    this.hideLoading('desktop');
+                });
+            }
+
+            hideLoading(type) {
+                const selector = type === 'mobile' ? 
+                    '.iphone-screen .loading' : 
+                    '.desktop-frame .loading';
+                
+                const loading = document.querySelector(selector);
+                if (loading) {
+                    loading.style.opacity = '0';
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                    }, 300);
+                }
+            }
+
+            switchDevice(deviceKey) {
+                if (deviceKey === this.currentDevice) return;
+
+                const device = this.devices[deviceKey];
+                const iphoneFrame = document.getElementById('iphoneFrame');
+                const dynamicIsland = document.querySelector('.dynamic-island');
+                const homeIndicator = document.querySelector('.home-indicator');
+
+                // Update active button
+                document.querySelectorAll('.device-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.device === deviceKey);
+                });
+
+                // Smooth transition
+                iphoneFrame.style.opacity = '0.7';
+                iphoneFrame.style.transform = 'scale(0.95)';
+
+                setTimeout(() => {
+                    // Update device
+                    this.currentDevice = deviceKey;
+                    
+                    // Apply device classes
+                    iphoneFrame.className = `iphone-frame ${device.classes}`;
+                    
+                    // Show/hide notch elements
+                    if (device.hasNotch) {
+                        dynamicIsland.style.display = 'block';
+                        homeIndicator.style.display = 'block';
+                    } else {
+                        dynamicIsland.style.display = 'none';
+                        homeIndicator.style.display = 'none';
+                    }
+
+                    // Reset transition
+                    iphoneFrame.style.opacity = '1';
+                    iphoneFrame.style.transform = 'scale(1)';
+                }, 150);
+            }
+
+            refreshFrames() {
+                const mobileFrame = document.getElementById('mobileFrame');
+                const desktopFrame = document.getElementById('desktopFrame');
+                
+                // Show loading indicators
+                document.querySelectorAll('.loading').forEach(loading => {
+                    loading.style.display = 'flex';
+                    loading.style.opacity = '1';
+                });
+
+                // Add subtle animation
+                mobileFrame.style.opacity = '0.5';
+                desktopFrame.style.opacity = '0.5';
+
+                // Refresh iframes
+                const currentSrc = mobileFrame.src;
+                mobileFrame.src = '';
+                desktopFrame.src = '';
+                
+                setTimeout(() => {
+                    mobileFrame.src = currentSrc;
+                    desktopFrame.src = currentSrc;
+                    mobileFrame.style.opacity = '1';
+                    desktopFrame.style.opacity = '1';
+                }, 100);
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new ActivonPreview();
+        });
+
+        // Add some subtle interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            // Parallax effect for iPhone frame
+            const iphoneFrame = document.getElementById('iphoneFrame');
+            
+            document.addEventListener('mousemove', (e) => {
+                const rect = iphoneFrame.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const deltaX = (e.clientX - centerX) / rect.width;
+                const deltaY = (e.clientY - centerY) / rect.height;
+                
+                const rotateX = deltaY * 2;
+                const rotateY = deltaX * 2;
+                
+                iphoneFrame.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            // Reset on mouse leave
+            iphoneFrame.addEventListener('mouseleave', () => {
+                iphoneFrame.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>

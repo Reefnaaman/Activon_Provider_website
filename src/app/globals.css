@@ -266,6 +266,13 @@ body {
   }
   
   /* Text Truncation */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
   .line-clamp-4 {
     display: -webkit-box;
     -webkit-line-clamp: 4;
@@ -273,6 +280,11 @@ body {
     overflow: hidden;
   }
   
+  /* Safe Area for Mobile Devices */
+  .pb-safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
   /* Smooth Scroll for Mobile */
   .mobile-scroll {
     scroll-behavior: smooth;

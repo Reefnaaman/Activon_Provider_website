@@ -40,10 +40,10 @@ function ServiceBadge({
 
   return (
     <div className={cn(
-      'inline-flex items-center gap-2 rounded-lg border font-ui transition-all duration-200 whitespace-nowrap',
-      'hover:shadow-sm hover:scale-105 touch-target active:scale-95',
-      // Mobile-optimized sizing
-      isMobile ? 'px-3 py-2 text-sm' : 'px-3 py-2 text-sm',
+      'inline-flex items-center gap-2 rounded-xl border font-ui transition-all duration-200 whitespace-nowrap',
+      'hover:shadow-sm hover:scale-105 active:scale-95',
+      // Mobile-optimized sizing and touch targets
+      isMobile ? 'px-4 py-2.5 text-sm min-h-[44px]' : 'px-3 py-2 text-sm',
       variantClasses[variant],
       className
     )}>
@@ -709,16 +709,22 @@ export function ServicesSection({ business, services = [], className, locale = '
       <div className="relative">
         {/* Mobile scroll navigation for badges */}
         {isMobile && serviceBadges.length > 2 && (
-          <div className="flex justify-end mb-2">
-            <div className="text-gray-600 text-xs font-ui">
-              Scroll to see all →
+          <div className="flex justify-between items-center mb-3">
+            <div className="text-white/60 text-xs font-ui">
+              {serviceBadges.length} {serviceBadges.length === 1 ? 'service' : 'services'}
+            </div>
+            <div className="text-white/60 text-xs font-ui flex items-center gap-1">
+              Swipe to explore
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
             </div>
           </div>
         )}
 
         <div className={cn(
-          isMobile 
-            ? "flex gap-3 overflow-x-auto mobile-scroll pb-2" 
+          isMobile
+            ? "flex gap-3 overflow-x-auto mobile-scroll pb-2 px-1 -mx-1"
             : "flex flex-wrap gap-3"
         )}>
           {/* Individual Service and Activity Badges */}

@@ -26,48 +26,47 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
       </div>
 
-      {/* Floating Glassmorphic Info Card - Positioned much lower */}
-      <div className="absolute bottom-4 left-4 right-4 z-10">
-        <div 
+      {/* Floating Glassmorphic Info Card - Optimized for thumb reach */}
+      <div className="absolute bottom-8 left-4 right-4 z-10">
+        <div
           className={cn(
             "bg-white/8 backdrop-blur-[20px] saturate-[140%] brightness-[105%]",
-            "border border-white/25 rounded-4xl p-5 shadow-2xl",
+            "border border-white/25 rounded-3xl p-4 shadow-2xl",
             "transition-all duration-300 max-w-full overflow-hidden"
           )}
           style={{
             backdropFilter: 'blur(20px) saturate(140%) brightness(105%)',
+            maxHeight: 'calc(100vh - 250px)', // Prevent card from being too tall
           }}
           dir={textClasses.dir}
         >
           {/* Business Name */}
           <h1 className={cn(
-            "text-3xl font-display text-white mb-4 tracking-tight leading-tight",
+            "text-2xl font-display text-white mb-3 tracking-tight leading-tight",
             textClasses.className
           )}>
             {business.name}
           </h1>
 
-          {/* Description */}
+          {/* Description with better truncation */}
           {business.description && (
             <p className={cn(
-              "text-gray-300 font-body text-base leading-relaxed mb-6",
-              textClasses.className
+              "text-gray-300 font-body text-sm leading-relaxed mb-4",
+              textClasses.className,
+              "line-clamp-3" // Use CSS line clamping for better text truncation
             )}>
-              {business.description.length > 150 
-                ? business.description.substring(0, 150) + '...' 
-                : business.description
-              }
+              {business.description}
             </p>
           )}
 
-          {/* Service Badges - Proper Container */}
+          {/* Service Badges - Improved spacing and visibility */}
           {(business.categoryName || serviceBadges.length > 0) && (
-            <div className="mb-5">
-              <div 
+            <div className="mb-4">
+              <div
                 className={cn(
-                  "flex gap-2 overflow-x-auto pb-2",
+                  "flex gap-2 overflow-x-auto pb-1",
                   "scrollbar-hide snap-x snap-mandatory",
-                  "px-1 -mx-1", // Add padding and negative margin for better scroll area
+                  "-mx-2 px-2", // Better horizontal scroll padding
                   locale === 'he' ? 'flex-row-reverse' : 'flex-row'
                 )}
                 style={{
@@ -77,10 +76,10 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
               >
               {business.categoryName && (
                 <span className={cn(
-                  "bg-blue-500/20 border border-blue-400/30 px-4 py-2",
-                  "rounded-xl text-blue-300 text-sm font-medium whitespace-nowrap",
+                  "bg-blue-500/20 border border-blue-400/30 px-3 py-1.5",
+                  "rounded-lg text-blue-300 text-xs font-medium whitespace-nowrap",
                   "flex-shrink-0 snap-center",
-                  "transition-all duration-200 hover:scale-105"
+                  "transition-all duration-200 active:scale-95"
                 )}>
                   {business.categoryName}
                 </span>
@@ -98,8 +97,8 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
               ))}
               {serviceBadges.length > 4 && (
                 <span className={cn(
-                  "bg-gray-500/20 border border-gray-400/30 px-4 py-2",
-                  "rounded-xl text-gray-300 text-sm font-medium whitespace-nowrap",
+                  "bg-gray-500/20 border border-gray-400/30 px-3 py-1.5",
+                  "rounded-lg text-gray-300 text-xs font-medium whitespace-nowrap",
                   "flex-shrink-0 snap-center flex items-center"
                 )}>
                   +{serviceBadges.length - 4} more
@@ -110,18 +109,17 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
           )}
 
           {/* Primary CTA Button - Touch Optimized */}
-          <div className="pt-1">
-            <CTASection 
-              business={business} 
-              locale={locale}
-              className="space-y-3"
-            />
-          </div>
+          <CTASection
+            business={business}
+            locale={locale}
+            className="space-y-2"
+            compactMode={true}
+          />
         </div>
       </div>
 
-      {/* Safe area spacer for overlapping card - Much larger gap between sections */}
-      <div className="h-96 bg-[#0D1117] pt-32"></div>
+      {/* Safe area spacer for overlapping card */}
+      <div className="h-64 bg-[#0D1117]"></div>
     </div>
   );
 }

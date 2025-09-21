@@ -15,6 +15,7 @@ import { BackgroundGradient } from '@/components/ui/background-gradient';
 import { BusinessNavbar } from '@/components/BusinessNavbar';
 import { MobileHero } from '@/components/mobile/MobileHero';
 import { Service } from '@/types/business';
+import { MobileStickyBar } from '@/components/mobile/MobileStickyBar';
 
 interface BusinessPageProps {
   params: { id: string };
@@ -530,6 +531,9 @@ export default async function BusinessPage({
             </div>
           </div>
         </section>
+
+        {/* Mobile Sticky CTA Bar */}
+        <MobileStickyBar business={business} locale={businessLocale} />
       </>
     );
   } catch (error) {
