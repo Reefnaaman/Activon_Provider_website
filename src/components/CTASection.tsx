@@ -11,19 +11,36 @@ interface CTASectionProps {
   business: NormalizedBusiness;
   className?: string;
   compactMode?: boolean;
+  heroMode?: boolean; // New: even more compact for hero cards
   locale?: 'he' | 'en';
 }
 
-function CTAButton({ 
-  cta, 
+// Helper function to get shorter labels for hero mode
+function getHeroLabel(cta: CTA, locale: 'he' | 'en' = 'en'): string {
+  switch (cta.type) {
+    case 'whatsapp':
+      return locale === 'he' ? 'וואטסאפ' : 'WhatsApp';
+    case 'call':
+      return locale === 'he' ? 'התקשר' : 'Call';
+    case 'email':
+      return locale === 'he' ? 'מייל' : 'Email';
+    default:
+      return cta.label;
+  }
+}
+
+function CTAButton({
+  cta,
   variant = 'primary',
   className,
-  locale = 'en'
-}: { 
-  cta: CTA; 
+  locale = 'en',
+  heroMode = false
+}: {
+  cta: CTA;
   variant?: 'primary' | 'secondary';
   className?: string;
   locale?: 'he' | 'en';
+  heroMode?: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const { isMobile, isTouchDevice } = useMobileDetection();
@@ -104,7 +121,9 @@ function CTAButton({
         ) : (
           <Icon className={cn(isMobile ? 'h-5 w-5' : 'h-4 w-4')} />
         )}
-        <span className={cn('font-medium', isMobile && 'text-base')}>{cta.label}</span>
+        <span className={cn('font-medium', isMobile && 'text-base')}>
+          {heroMode ? getHeroLabel(cta, locale) : cta.label}
+        </span>
       </button>
     );
   }
@@ -126,12 +145,14 @@ function CTAButton({
       ) : (
         <Icon className={cn(isMobile ? 'h-5 w-5' : 'h-4 w-4')} />
       )}
-      <span className={cn('font-medium', isMobile && 'text-base')}>{cta.label}</span>
+      <span className={cn('font-medium', isMobile && 'text-base')}>
+        {heroMode ? getHeroLabel(cta, locale) : cta.label}
+      </span>
     </a>
   );
 }
 
-export function CTASection({ business, className, compactMode = false, locale = 'en' }: CTASectionProps) {
+export function CTASection({ business, className, compactMode = false, heroMode = false, locale = 'en' }: CTASectionProps) {
   const { isMobile } = useMobileDetection();
   const primaryCTA = pickCTA(business);
   const secondaryCTA = pickSecondaryCTA(business, primaryCTA.type);
@@ -140,26 +161,56 @@ export function CTASection({ business, className, compactMode = false, locale = 
   const flexClasses = getDirectionalClasses(locale, 'flex');
   const containerClasses = getDirectionalClasses(locale, 'container');
 
+  // Hero mode: horizontal layout with shorter text
+  if (heroMode) {
+    return (
+      <div className={cn(
+        'flex gap-2',
+        locale === 'he' ? 'flex-row-reverse' : 'flex-row',
+        className
+      )} dir={containerClasses.dir}>
+        <CTAButton
+          cta={primaryCTA}
+          variant="primary"
+          locale={locale}
+          heroMode={true}
+          className="flex-1"
+        />
+        {secondaryCTA && (
+          <CTAButton
+            cta={secondaryCTA}
+            variant="secondary"
+            locale={locale}
+            heroMode={true}
+            className="flex-1"
+          />
+        )}
+      </div>
+    );
+  }
+
   if (compactMode) {
     return (
       <div className={cn(
-        'flex flex-col', 
-        isMobile ? 'gap-3' : 'gap-3',
-        locale === 'he' ? 'items-end' : 'items-start',
+        'flex flex-row',
+        'gap-2',
+        locale === 'he' ? 'flex-row-reverse' : '',
         className
       )} dir={containerClasses.dir}>
-        <CTAButton 
-          cta={primaryCTA} 
-          variant="primary" 
+        <CTAButton
+          cta={primaryCTA}
+          variant="primary"
           locale={locale}
-          className="w-full"
+          heroMode={false}
+          className="flex-1"
         />
         {secondaryCTA && (
-          <CTAButton 
-            cta={secondaryCTA} 
-            variant="secondary" 
+          <CTAButton
+            cta={secondaryCTA}
+            variant="secondary"
             locale={locale}
-            className="w-full"
+            heroMode={false}
+            className="flex-1"
           />
         )}
       </div>
@@ -180,18 +231,20 @@ export function CTASection({ business, className, compactMode = false, locale = 
         // Mobile-specific adjustments
         isMobile && 'gap-4'
       )}>
-        <CTAButton 
-          cta={primaryCTA} 
-          variant="primary" 
-          locale={locale} 
-          className="w-full sm:w-auto lg:w-full" 
+        <CTAButton
+          cta={primaryCTA}
+          variant="primary"
+          locale={locale}
+          heroMode={false}
+          className="w-full sm:w-auto lg:w-full"
         />
         {secondaryCTA && (
-          <CTAButton 
-            cta={secondaryCTA} 
-            variant="secondary" 
-            locale={locale} 
-            className="w-full sm:w-auto lg:w-full" 
+          <CTAButton
+            cta={secondaryCTA}
+            variant="secondary"
+            locale={locale}
+            heroMode={false}
+            className="w-full sm:w-auto lg:w-full"
           />
         )}
       </div>

@@ -107,7 +107,7 @@ export function pickCTA(business: NormalizedBusiness): CTA {
   // Priority: WhatsApp > Call > Email > None
   if (primaryPhone?.hasWhatsApp && primaryPhone?.number) {
     return {
-      label: 'Chat on WhatsApp',
+      label: 'WhatsApp',
       href: waHref(primaryPhone.number),
       type: 'whatsapp'
     };

@@ -17,17 +17,20 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
   const textClasses = getDirectionalClasses(locale, 'text');
 
   return (
-    <div className="lg:hidden relative overflow-hidden">
-      {/* Hero Image Section - Uses animated Gallery background */}
-      <div className="aspect-[16/9] w-full relative overflow-hidden">
+    <div className="lg:hidden relative overflow-hidden h-full">
+      {/* Hero Image Section - Full viewport Gallery background */}
+      <div className="absolute inset-0 w-full h-full">
         <Gallery business={business} backgroundMode />
-        
+
         {/* Gradient overlay for better card contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30"></div>
       </div>
 
-      {/* Floating Glassmorphic Info Card - Optimized for thumb reach */}
-      <div className="absolute bottom-8 left-4 right-4 z-10">
+      {/* Ultra-smooth, long fade transition */}
+      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[#0D1117] via-[#0D1117]/95 via-[#0D1117]/80 via-[#0D1117]/50 via-[#0D1117]/20 to-transparent pointer-events-none z-20"></div>
+
+      {/* Floating Glassmorphic Info Card - Better spacing from navbar */}
+      <div className="absolute top-32 left-4 right-4 z-10">
         <div
           className={cn(
             "bg-white/8 backdrop-blur-[20px] saturate-[140%] brightness-[105%]",
@@ -59,9 +62,9 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
             </p>
           )}
 
-          {/* Service Badges - Improved spacing and visibility */}
+          {/* Service Badges - Supporting info */}
           {(business.categoryName || serviceBadges.length > 0) && (
-            <div className="mb-4">
+            <div className="mb-0">
               <div
                 className={cn(
                   "flex gap-2 overflow-x-auto pb-1",
@@ -107,19 +110,21 @@ export function MobileHero({ business, locale = 'en', serviceBadges = [] }: Mobi
               </div>
             </div>
           )}
+        </div>
+      </div>
 
-          {/* Primary CTA Button - Touch Optimized */}
+      {/* Smaller, Less Aggressive CTAs - Outside the card, same width */}
+      <div className="absolute top-72 left-4 right-4 z-10">
+        <div className="transform scale-90">
           <CTASection
             business={business}
             locale={locale}
-            className="space-y-2"
-            compactMode={true}
+            heroMode={true}
           />
         </div>
       </div>
 
-      {/* Safe area spacer for overlapping card */}
-      <div className="h-64 bg-[#0D1117]"></div>
+
     </div>
   );
 }

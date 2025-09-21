@@ -285,6 +285,16 @@ body {
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  /* Hide scrollbars but keep scroll functionality */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+
   /* Smooth Scroll for Mobile */
   .mobile-scroll {
     scroll-behavior: smooth;

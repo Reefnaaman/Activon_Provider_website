@@ -6,6 +6,7 @@ import { generateMetadata as generateBusinessMetadata, StructuredDataScript } fr
 import { Hero } from '@/components/Hero';
 import { CTASection } from '@/components/CTASection';
 import { ServicesSection } from '@/components/ServicesSection';
+import { RichAccordionServices } from '@/components/RichAccordionServices';
 import { Gallery } from '@/components/Gallery';
 import { ContactSection } from '@/components/ContactSection';
 import { SocialPlatformButton } from '@/components/SocialPlatformButton';
@@ -88,28 +89,17 @@ export default async function BusinessPage({
     const containerClasses = getDirectionalClasses(businessLocale, 'container');
     const langClasses = getLanguageSpecificClasses(businessLocale);
     
-    // Create service badges from real services data
+    // Create service badges from real services data (SERVICES ONLY for hero)
     const serviceBadges = [];
-    
-    // Add service badges
+
+    // Add only service badges (no activities in hero)
     services.forEach(service => {
       if (service.service_is_active) {
         serviceBadges.push({
           title: service.service_title,
-          type: 'service' as const
+          type: 'service' as const,
+          serviceId: service.service_id // Add service ID for targeted expansion
         });
-        
-        // Add activity badges from this service
-        if (service.activities) {
-          service.activities.forEach(activity => {
-            if (activity.is_active) {
-              serviceBadges.push({
-                title: activity.title,
-                type: 'activity' as const
-              });
-            }
-          });
-        }
       }
     });
     
@@ -134,7 +124,7 @@ export default async function BusinessPage({
         <StructuredDataScript business={business} />
         
         {/* First Section: Full-Screen Gallery Background with Curved Overlays */}
-        <section className="h-screen relative overflow-hidden" dir={containerClasses.dir}>
+        <section id="hero-section" className="h-screen relative overflow-hidden" dir={containerClasses.dir}>
           {/* Background Gallery */}
           <div className="absolute inset-0">
             <Gallery business={business} backgroundMode />
@@ -278,7 +268,11 @@ export default async function BusinessPage({
               </div>
               <div className="absolute inset-0 bg-[#0D1117]/80"></div>
               <div className="relative z-10 max-w-7xl mx-auto py-16">
-                <ServicesSection business={business} services={services} showcaseMode />
+                <RichAccordionServices
+                  business={business}
+                  services={services}
+                  locale={businessLocale}
+                />
               </div>
               
               {/* Desktop Only: Section Peek - Visual hint of next section */}
@@ -299,24 +293,18 @@ export default async function BusinessPage({
               </div>
             </section>
 
-            {/* Mobile Services Section - Solid Background */}
-            <section className="lg:hidden relative py-16 mt-16 overflow-hidden min-h-[400px]">
-              {/* Solid dark background */}
-              <div className="absolute inset-0 bg-[#0D1117]"></div>
-              
+            {/* Mobile Services Section - Seamless Blend */}
+            <section id="mobile-services-section" className="lg:hidden relative pt-8 pb-12 -mt-32 overflow-hidden">
+              {/* Gradual background that starts transparent and becomes solid */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0D1117]/20 via-[#0D1117]/60 via-[#0D1117]/90 to-[#0D1117]"></div>
+
               {/* Content container - Always on top */}
               <div className="relative z-20 px-4">
-                <h2 className={cn(
-                  "text-2xl font-heading text-white mb-6",
-                  businessLocale === 'he' ? 'text-right' : 'text-center'
-                )}>
-                  {businessLocale === 'he' ? 'השירותים שלנו' : 'Our Services'}
-                </h2>
-                <div className="bg-white/8 backdrop-blur-[20px] border border-white/25 rounded-4xl p-6 shadow-2xl overflow-hidden">
-                  <div className="relative z-10">
-                    <ServicesSection business={business} services={services} />
-                  </div>
-                </div>
+                <RichAccordionServices
+                  business={business}
+                  services={services}
+                  locale={businessLocale}
+                />
               </div>
             </section>
           </>
@@ -440,29 +428,21 @@ export default async function BusinessPage({
           </div>
         </section>
 
-        {/* Mobile Contact Section - Optimized Performance */}
-        <section className="lg:hidden relative bg-gradient-to-b from-[#F5F5F7] to-[#E8E8ED] overflow-hidden">
-          {/* Lightweight background - no heavy gallery on mobile */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2E6FF2]/20 via-[#5F8CFF]/10 to-[#2E6FF2]/20"></div>
-            {/* Subtle pattern overlay for visual interest */}
-            <div className="absolute inset-0" style={{
-              backgroundImage: `radial-gradient(circle at 25% 25%, rgba(46, 111, 242, 0.1) 0%, transparent 50%), 
-                               radial-gradient(circle at 75% 75%, rgba(95, 140, 255, 0.1) 0%, transparent 50%)`
-            }}></div>
-          </div>
-          
-          <div className="relative z-10 py-12 px-4">
-            <h2 className={cn(
-              "text-2xl font-heading text-gray-900 mb-8 text-center",
-              businessLocale === 'he' ? 'text-right' : 'text-left'
-            )}>
-              {businessLocale === 'he' ? 'מצאו אותנו כאן' : 'Find Us Here'}
-            </h2>
-            
-            {/* Address Info with Embedded Map */}
-            {business.addresses.length > 0 && (
-              <div className="bg-[#0D1117] border border-white/10 rounded-2xl overflow-hidden mb-6">
+
+        {/* Mobile Map Section */}
+        {business.addresses.length > 0 && (
+          <section id="mobile-contact-section" className="lg:hidden relative pt-8 pb-8 overflow-hidden">
+            {/* Seamless continuation - no background needed since services section flows into this */}
+            <div className="absolute inset-0 bg-[#0D1117]"></div>
+
+            {/* Content container */}
+            <div className="relative z-20 px-4">
+              <h2 className="text-2xl font-heading text-white mb-6 text-center">
+                {businessLocale === 'he' ? 'כתובת' : 'Address'}
+              </h2>
+
+              {/* Map Card */}
+              <div className="bg-white/8 backdrop-blur-[20px] border border-white/25 rounded-3xl overflow-hidden shadow-2xl">
                 {/* Embedded Google Maps */}
                 <div className="aspect-[4/3] bg-gradient-to-br from-[#2E6FF2]/20 to-[#5F8CFF]/20 relative">
                   {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
@@ -476,7 +456,7 @@ export default async function BusinessPage({
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      className="rounded-t-2xl"
+                      className="rounded-t-3xl"
                     ></iframe>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#2E6FF2]/20 to-[#5F8CFF]/20">
@@ -488,15 +468,15 @@ export default async function BusinessPage({
                     </div>
                   )}
                 </div>
-                
+
                 {/* Address Information */}
                 <div className="p-6">
-                  <h3 className="font-heading text-white mb-2">{business.name}</h3>
+                  <h3 className="font-heading text-white mb-2 text-lg">{business.name}</h3>
                   <p className="text-gray-300 text-sm mb-4">
                     {business.addresses[0].line1}<br />
                     {business.addresses[0].city}, {business.addresses[0].country}
                   </p>
-                  
+
                   {/* Map Navigation Buttons */}
                   <div className="flex gap-3">
                     <a
@@ -505,9 +485,9 @@ export default async function BusinessPage({
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-3 rounded-xl text-center font-medium backdrop-blur-md text-xs"
+                      className="flex-1 bg-blue-500/20 border border-blue-400/30 text-blue-300 px-4 py-3 rounded-xl text-center font-medium backdrop-blur-md text-sm transition-all duration-200 hover:bg-blue-500/30 active:scale-95"
                     >
-                      Open in Google Maps
+                      Google Maps
                     </a>
                     <a
                       href={`https://waze.com/ul?q=${encodeURIComponent(
@@ -515,22 +495,16 @@ export default async function BusinessPage({
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 px-4 py-3 rounded-xl text-center font-medium backdrop-blur-md text-xs"
+                      className="flex-1 bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 px-4 py-3 rounded-xl text-center font-medium backdrop-blur-md text-sm transition-all duration-200 hover:bg-cyan-500/30 active:scale-95"
                     >
-                      Open in Waze
+                      Waze
                     </a>
                   </div>
                 </div>
               </div>
-            )}
-
-            {/* Contact Options */}
-            <div className="bg-[#0D1117]/90 backdrop-blur-md border border-white/10 rounded-2xl p-6">
-              <h3 className="font-heading text-white mb-4">Get In Touch</h3>
-              <ContactSection business={business} />
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* Mobile Sticky CTA Bar */}
         <MobileStickyBar business={business} locale={businessLocale} />

@@ -71,9 +71,19 @@ export function BusinessNavbar({ businessLocale, hasServices, businessName }: Bu
   }, [isMobileMenuOpen]);
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    // Use mobile-specific section IDs on mobile devices
+    let targetId = sectionId;
+    if (isMobile) {
+      if (sectionId === 'services-section') {
+        targetId = 'mobile-services-section';
+      } else if (sectionId === 'contact-section') {
+        targetId = 'mobile-contact-section';
+      }
+    }
+
+    const element = document.getElementById(targetId);
     if (element) {
-      element.scrollIntoView({ 
+      element.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });

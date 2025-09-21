@@ -212,6 +212,13 @@
             border: none;
             border-radius: 52px;
             background: #FFFFFF;
+            /* Hide scrollbars in mobile iframe */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+
+        .iphone-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         /* RIGHT SIDE - Desktop View */
